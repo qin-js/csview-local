@@ -19,16 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----
-
-SCOPE OF THIS LICENSE
-
-This license covers ONLY the source code of this repository: the reading
-interface, the content build pipeline, and the local static server.
-
-It does NOT cover, grant any rights to, or apply to the interview content
-produced by the CSView project (https://github.com/zijing2333/CSView).
-That content is not included in this repository, is fetched locally by each
-user, and remains the property of its original authors, who state that
-re-hosting and redistribution of their material is not permitted. See README.md.

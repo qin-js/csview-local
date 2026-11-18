@@ -1,0 +1,44 @@
+csview-local
+Copyright (c) 2026 qin-js
+
+SCOPE OF THE MIT LICENSE
+========================
+
+The MIT license in LICENSE covers ONLY the source code of this repository:
+the reading interface, the content build pipeline, and the local static server.
+
+It does NOT cover, grant any rights to, or apply to the interview content
+produced by the CSView project:
+
+    https://github.com/zijing2333/CSView
+
+That content is NOT included in this repository. It is fetched locally by each
+user via `npm run fetch`, and remains the property of its original authors
+(子敬 / zijing2333 and the CSView author team: 枫长, LH, jjd, xmy, fawn, 小羊).
+
+The upstream project distributes no open-source license and its README states
+that re-hosting and redistribution of the material is not permitted, and in
+particular that the content must not be republished to WeChat public accounts.
+Accordingly, `content/`, `public/data/` and `public/img/` are excluded from
+version control. Please use the fetched material for personal study only.
+
+The upstream project credits https://xiaolincoding.com/ for part of its
+material; those rights likewise remain with the respective authors.
+
+THIRD-PARTY COMPONENTS
+======================
+
+Build-time dependencies retain their own licenses:
+
+  - markdown-it, markdown-it-footnote — MIT
+  - gray-matter — MIT
+  - shiki — MIT
+  - @fontsource-variable/inter — SIL OFL 1.1 (Inter font)
+  - @fontsource-variable/jetbrains-mono — SIL OFL 1.1 (JetBrains Mono font)
+  - playwright (dev only) — Apache-2.0
+
+Font files are copied from node_modules into public/fonts/ at build time and
+are not committed to this repository.
+
+If you are a content author and have any objection to this project, please open
+an issue and it will be addressed immediately.

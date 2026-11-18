@@ -159,7 +159,7 @@ npm run verify    # 跑两套 Playwright 验收用例
 
 ## 内容版权与许可范围
 
-- **代码**：MIT，见 [LICENSE](LICENSE)。仅覆盖本仓库的界面、构建管线与服务器代码。
+- **代码**：MIT，见 [LICENSE](LICENSE)。仅覆盖本仓库的界面、构建管线与服务器代码；范围说明与第三方组件见 [NOTICE](NOTICE)。
 - **内容**：题目、解析、图片均来自 [zijing2333/CSView](https://github.com/zijing2333/CSView)，
   版权归原作者所有。上游未提供开源许可证，且其 README 声明「禁止整合恶意搬运、分享，
   且严禁将网站内容整合搬运到任何公众号」。
