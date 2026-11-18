@@ -1,0 +1,35 @@
+name: build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Fetch upstream content (build input only, never committed)
+        run: npm run fetch
+      - name: Build content pipeline
+        run: npm run build
+      - name: Check build output
+        run: |
+          test -s public/data/manifest.json
+          test -s public/data/search.json
+          test -s public/data/rank.json
+          node -e "const m=require('./public/data/manifest.json');if(!m.stats.questions||!m.docs.length)process.exit(1);console.log('questions:',m.stats.questions,'docs:',m.stats.docs)"
+      - name: Smoke test server
+        run: |
+          node server.mjs &
+          sleep 2
+          curl -fsS -o /dev/null http://localhost:5173/
+          curl -fsS -o /dev/null http://localhost:5173/data/manifest.json
+          curl -fsS -o /dev/null http://localhost:5173/app.js

@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CSView · 面经知识库</title>
+<meta name="description" content="从数百篇真实面经中提炼的 747 道计算机面试高频题，覆盖算法、计算机网络、操作系统、MySQL、Redis、C++、Java、Golang，支持自测、频次排序与进度追踪。">
+<meta name="theme-color" content="#070A16">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B1022'/%3E%3Cpath d='M11 10 6 16l5 6M21 10l5 6-5 6' stroke='%234C7DFF' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%2322D3EE'/%3E%3C/svg%3E">
+<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="bg-layers" aria-hidden="true">
+  <div class="aurora a1"></div>
+  <div class="aurora a2"></div>
+  <div class="aurora a3"></div>
+  <div class="mesh"></div>
+  <div class="gridlines"></div>
+  <div class="grain"></div>
+</div>
+
+<a class="skiplink" href="#main">跳到主内容</a>
+
+<header class="nav" id="nav">
+  <div class="nav-in">
+    <a class="brand" href="#/" aria-label="CSView 首页">
+      <span class="brand-mark">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4C7DFF"/><stop offset="1" stop-color="#22D3EE"/></linearGradient></defs><path d="M11 9.5 5.5 16l5.5 6.5M21 9.5 26.5 16 21 22.5" stroke="url(#bg1)" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="16" r="3.4" fill="#FF3D6E"/><circle cx="16" cy="16" r="6.6" stroke="url(#bg1)" stroke-width="1.3" fill="none" opacity=".55"/></svg>
+      </span>
+      <span class="brand-text"><b>CSView</b><i>面经知识库</i></span>
+    </a>
+    <nav class="nav-links" id="navLinks" aria-label="主导航"></nav>
+    <div class="nav-actions">
+      <button class="searchbtn" id="searchBtn" type="button" aria-label="搜索题目">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+        <span>搜索题目</span><kbd>⌘K</kbd>
+      </button>
+      <a class="pill-progress" id="navProgress" href="#/progress" title="学习进度">
+        <svg viewBox="0 0 36 36" class="pp-ring" aria-hidden="true"><circle cx="18" cy="18" r="15.5" class="pp-track"/><circle cx="18" cy="18" r="15.5" class="pp-fill" id="ppFill"/></svg>
+        <span id="ppText">0%</span>
+      </a>
+      <button class="iconbtn" id="themeBtn" type="button" aria-label="切换主题" title="切换深浅色"></button>
+      <button class="iconbtn burger" id="burger" type="button" aria-label="打开菜单" aria-expanded="false">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="readbar" id="readbar"><i></i></div>
+</header>
+
+<main id="main" class="stage" tabindex="-1"></main>
+
+<footer class="foot">
+  <div class="foot-in">
+    <div class="foot-brand">
+      <span class="brand-mark small"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M11 9.5 5.5 16l5.5 6.5M21 9.5 26.5 16 21 22.5" stroke="#4C7DFF" stroke-width="2.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/><circle cx="16" cy="16" r="3.4" fill="#FF3D6E"/></svg></span>
+      <div><b>CSView</b><p>内容来自 <a href="https://github.com/zijing2333/CSView" target="_blank" rel="noopener">zijing2333/CSView</a>，由面经持续汇总迭代。</p></div>
+    </div>
+    <div class="foot-cols">
+      <div><h4>刷题</h4><a href="#/c/algorithm">面试必刷算法</a><a href="#/c/design">系统设计</a><a href="#/c/intelligence">智力题</a><a href="#/c/hr">HR 面</a></div>
+      <div><h4>基础</h4><a href="#/c/network">计算机网络</a><a href="#/c/os">操作系统</a><a href="#/c/mysql">MySQL</a><a href="#/c/redis">Redis</a></div>
+      <div><h4>语言与中间件</h4><a href="#/c/cpp">C++</a><a href="#/c/java">Java</a><a href="#/c/golang">Golang</a><a href="#/c/k8s">Kubernetes</a></div>
+      <div><h4>工具</h4><a href="#/rank">高频榜</a><a href="#/quiz">自测模式</a><a href="#/progress">学习进度</a><a href="#/about">关于本站</a></div>
+    </div>
+  </div>
+  <div class="foot-base"><span id="footStats"></span><span>本站为 CSView 开源内容的本地阅读界面 · 内容版权归原作者所有</span></div>
+</footer>
+
+<div class="scrim" id="scrim" hidden></div>
+
+<aside class="drawer" id="drawer" hidden aria-label="站点菜单">
+  <div class="drawer-head"><b>导航</b><button class="iconbtn" id="drawerClose" type="button" aria-label="关闭菜单"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
+  <div class="drawer-body" id="drawerBody"></div>
+</aside>
+
+<div class="palette" id="palette" hidden role="dialog" aria-modal="true" aria-label="搜索题目">
+  <div class="pal-box">
+    <div class="pal-input">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg>
+      <input id="palInput" type="text" placeholder="搜索 747 道面试题 · 支持题目与正文全文" autocomplete="off" spellcheck="false" aria-label="搜索关键词">
+      <span class="pal-count" id="palCount"></span>
+      <button class="pal-esc" id="palClose" type="button">ESC</button>
+    </div>
+    <div class="pal-filters" id="palFilters"></div>
+    <div class="pal-results" id="palResults"></div>
+    <div class="pal-foot"><span><kbd>↑</kbd><kbd>↓</kbd> 选择</span><span><kbd>↵</kbd> 打开</span><span><kbd>⌘</kbd><kbd>↵</kbd> 新标签</span><span class="pal-hint">全文检索 · 本地索引</span></div>
+  </div>
+</div>
+
+<div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="图片预览">
+  <button class="lb-close" id="lbClose" type="button" aria-label="关闭预览"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <img id="lbImg" alt="">
+  <div class="lb-cap" id="lbCap"></div>
+</div>
+
+<div class="modal" id="modal" hidden role="dialog" aria-modal="true"></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+
+<script type="module" src="/app.js"></script>
+</body>
+</html>

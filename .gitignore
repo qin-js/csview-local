@@ -1,0 +1,24 @@
+# dependencies
+node_modules/
+
+# upstream interview content — never committed, fetched locally via `npm run fetch`
+content/
+
+# generated build output
+public/data/
+public/img/
+public/fonts/
+
+# logs & editor noise
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# local verification artifacts
+tools/.cache/
+test-results/
+playwright-report/

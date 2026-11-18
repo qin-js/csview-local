@@ -1,0 +1,51 @@
+{
+  "name": "csview-local",
+  "version": "1.0.0",
+  "description": "Local reading & self-testing interface for the CSView interview knowledge base (content fetched separately, not redistributed).",
+  "type": "module",
+  "license": "MIT",
+  "author": "qin-js",
+  "homepage": "https://github.com/qin-js/csview-local#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qin-js/csview-local.git"
+  },
+  "bugs": {
+    "url": "https://github.com/qin-js/csview-local/issues"
+  },
+  "keywords": [
+    "interview",
+    "csview",
+    "computer-science",
+    "study",
+    "flashcards",
+    "spaced-repetition",
+    "markdown",
+    "shiki",
+    "spa",
+    "chinese"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "fetch": "node tools/fetch.mjs",
+    "build": "node tools/build.mjs",
+    "start": "node server.mjs",
+    "dev": "node server.mjs",
+    "setup": "npm run fetch && npm run build",
+    "verify": "node tools/verify.mjs && node tools/verify2.mjs",
+    "preview": "node tools/preview.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "gray-matter": "^4.0.3",
+    "markdown-it": "^15.0.3",
+    "markdown-it-footnote": "^4.0.0",
+    "shiki": "^4.6.0"
+  },
+  "devDependencies": {
+    "playwright": "^1.65.1"
+  }
+}
