@@ -149,9 +149,13 @@ npm start         # 启动服务（默认 5173）
 npm run verify    # 跑两套 Playwright 验收用例
 ```
 
-`npm run verify` 需要先 `npx playwright install chromium`，或用 `CHROME_BIN` 指向已有的 Chrome/Chromium。
-用例覆盖：路由与深链刷新、搜索、自测完整循环与重开、收藏/笔记/标记、导出导入与撤销、
-8 种视口溢出扫描、定时器与监听器泄漏、浮层层级与移动端可达性。
+`npm run verify` 需要先 `npx playwright install chromium`，或用 `CHROME_BIN` 指向已有的 Chrome/Chromium；
+用 `BASE_URL` 可以指向别处运行的实例。用例覆盖：路由与深链刷新、搜索、自测完整循环与重开、
+收藏/笔记/标记、导出导入与撤销、8 种视口溢出扫描、定时器与监听器泄漏、浮层层级与移动端可达性。
+
+想在 GitHub Actions 上跑构建校验，把 [`docs/ci-build.yml`](docs/ci-build.yml) 复制到
+`.github/workflows/build.yml` 即可（推送 workflow 文件需要带 `workflow` scope 的令牌：
+`gh auth refresh -s workflow`）。它会执行 `npm ci → fetch → build`，校验产物并对服务器做冒烟测试。
 
 ## 内容版权与许可范围
 
