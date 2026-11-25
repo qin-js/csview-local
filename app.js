@@ -119,6 +119,7 @@ async function route() {
   closeNavDrop();
   closeDrawer();
   closePopovers();
+  if (!pal.hidden) closePalette();
   current?.cleanup?.();
   current = null;
 
