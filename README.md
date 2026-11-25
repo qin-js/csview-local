@@ -95,7 +95,8 @@ npm run serve:dist    # → http://localhost:5199/csview-local/ 本地按子路�
 npm run verify:pages  # Playwright 验收：子路径启动、示例题库、导入完整题库、持久化、8 视口
 ```
 
-把 `dist/` 推到 `gh-pages` 分支，再在仓库 Settings → Pages 里选 `gh-pages` / `root` 即可。
+把 `dist/` 推到 `gh-pages` 分支，再在仓库 Settings → Pages 里选 `gh-pages` / `root` 即可
+（`npm run deploy` 会一次做完构建与推送）。
 所有资源与数据路径都是相对路径，放在任意子路径下都能直接跑。
 
 ## 功能

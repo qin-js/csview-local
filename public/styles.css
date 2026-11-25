@@ -241,7 +241,7 @@ html[data-motion='off'] [data-reveal]{opacity:1;transform:none;transition:none}
 .hero h1{font-size:clamp(38px,5.4vw,68px);line-height:1.06;letter-spacing:-.035em;margin:20px 0 0;font-weight:800}
 .hero h1 .grad{background:linear-gradient(104deg,var(--volt) 0%,var(--cyan) 42%,var(--acid) 88%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero h1 em{font-style:normal;position:relative;white-space:nowrap}
-.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:.08em;height:.16em;background:linear-gradient(90deg,var(--flare),var(--amber));opacity:.42;border-radius:3px;transform:scaleX(0);transform-origin:left;animation:underline 1s .5s var(--ease-out) forwards}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:-.04em;height:.1em;background:linear-gradient(90deg,var(--flare),var(--amber));opacity:.8;border-radius:3px;transform:scaleX(0);transform-origin:left;animation:underline 1s .5s var(--ease-out) forwards}
 @keyframes underline{to{transform:scaleX(1)}}
 html[data-motion='off'] .hero h1 em::after{transform:scaleX(1);animation:none}
 .lede{margin-top:20px;font-size:16px;line-height:1.75;color:var(--fg-2);max-width:56ch}
@@ -742,6 +742,11 @@ html[data-theme='light'] .shiki,html[data-theme='light'] .shiki span{color:var(-
 .modal{position:fixed;inset:0;z-index:125;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--scrim);backdrop-filter:blur(5px);animation:fadeIn .18s}
 .modal-box{width:min(480px,100%);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-l);box-shadow:var(--shadow-l);padding:26px;animation:palIn .24s var(--ease-out)}
 .modal-box h3{font-size:18px;margin-bottom:10px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.modal-head h3{margin-bottom:0}
+.modal-x{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--fg-3);cursor:pointer;transition:.18s var(--ease)}
+.modal-x:hover{color:var(--fg);border-color:var(--volt);background:color-mix(in srgb,var(--volt) 16%,var(--surface-2))}
+.modal-x svg{width:15px;height:15px}
 .modal-box p{font-size:13.5px;color:var(--fg-2);line-height:1.7}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
 
@@ -849,6 +854,7 @@ html[data-theme='light'] .shiki,html[data-theme='light'] .shiki span{color:var(-
 .demo-strip p{font-size:12.5px;color:var(--fg-3);line-height:1.65;margin-top:3px;max-width:82ch}
 
 .modal-box.wide{width:min(620px,100%);max-height:86vh;overflow-y:auto}
+.modal-box.wide .modal-head{position:sticky;top:0;z-index:2;background:var(--surface);padding:4px 0 10px;margin-top:-4px}
 .src-card{border:1px solid var(--line-2);border-radius:var(--r-m);padding:15px 16px;background:var(--bg-2)}
 .src-card.demo{border-color:color-mix(in srgb,var(--amber) 36%,transparent)}
 .src-card.local{border-color:color-mix(in srgb,var(--ok) 36%,transparent)}

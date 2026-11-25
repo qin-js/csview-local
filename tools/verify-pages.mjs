@@ -20,14 +20,16 @@ page.on('requestfailed', (r) => errors.push(`[reqfail] ${r.url()} ${r.failure()?
 page.on('response', (r) => { if (r.status() >= 400) errors.push(`[http ${r.status()}] ${r.url()}`); });
 const wait = (ms) => page.waitForTimeout(ms);
 const go = async (h, ms = 800) => { await page.goto(`${BASE}/${h}`, { waitUntil: 'networkidle' }); await wait(ms); };
+const settled = async (sel, timeout = 30000) => { await page.locator(sel).first().waitFor({ timeout }).catch(() => {}); return page.locator(sel).count(); };
 
 console.log('\n== A. SUBPATH BOOT (demo library) ==');
 await go('', 1200);
 const url = page.url();
 url.includes('/csview-local/') ? ok(`served under subpath: ${url}`) : bad(`url ${url}`);
+await settled('.hero-stats dt');
 const qCount = await page.locator('.hero-stats dt').first().innerText();
 qCount === '58' ? ok('demo library loaded: 58 questions') : bad(`questions ${qCount}`);
-const cats = await page.locator('.cat-card').count();
+const cats = await settled('.cat-card');
 cats === 10 ? ok('10 demo categories') : bad(`cats ${cats}`);
 (await page.locator('.demo-strip').isVisible()) ? ok('demo disclosure strip visible') : bad('no disclosure');
 const libTxt = await page.locator('#libBtn').innerText();
@@ -38,7 +40,7 @@ await page.screenshot({ path: `${OUT}/p1-demo-home.png` });
 
 console.log('\n== B. DEMO CONTENT RENDERS ==');
 await go('#/d/network-tcp', 900);
-const cards = await page.locator('.qcard[data-q]').count();
+const cards = await settled('.qcard[data-q]');
 cards === 6 ? ok('6 TCP questions') : bad(`cards ${cards}`);
 const svgImg = await page.locator('.prose img.md-img').count();
 svgImg === 1 ? ok('local SVG diagram present') : bad(`img ${svgImg}`);
@@ -58,7 +60,7 @@ await page.keyboard.press('Escape');
 await wait(250);
 
 await go('#/d/algorithm-linklist', 900);
-const tabs = await page.locator('.code-tabs').count();
+const tabs = await settled('.code-tabs');
 tabs === 3 ? ok('3 tri-language code tab groups') : bad(`tabs ${tabs}`);
 const tokens = await page.locator('.shiki span[style]').count();
 tokens > 100 ? ok(`syntax highlighting: ${tokens} tokens`) : bad(`tokens ${tokens}`);
@@ -70,6 +72,7 @@ await page.screenshot({ path: `${OUT}/p3-demo-code.png` });
 
 console.log('\n== C. PRIMARY LOOP ON DEMO DATA ==');
 await go('#/d/redis-application', 900);
+await settled('.qcard[data-q]');
 await page.locator('.qcard[data-q]').first().locator('[data-mark-btn]').click();
 await wait(250);
 (await page.locator('.qcard[data-q]').first().getAttribute('data-mark')) === '1' ? ok('mark works') : bad('mark failed');
@@ -83,23 +86,25 @@ await wait(300);
 (await page.locator('.qcard[data-q]').first().locator('[data-note]').getAttribute('class')).includes('has-note') ? ok('note saved') : bad('note failed');
 
 await page.keyboard.press('Control+k');
-await wait(700);
+await wait(400);
 await page.fill('#palInput', 'MVCC');
-await wait(500);
+await page.locator('.pal-item[data-pi]').first().waitFor({ timeout: 25000 });
 const hits = await page.locator('.pal-item[data-pi]').count();
 hits > 0 ? ok(`search MVCC -> ${hits} hits`) : bad('no hits');
 await page.keyboard.press('Enter');
-await wait(900);
+await page.waitForFunction(() => location.hash.startsWith('#/q/'), null, { timeout: 20000 }).catch(() => {});
+await wait(600);
 (page.url().includes('#/q/')) ? ok('search deep link works') : bad('deep link failed');
 
 await go('#/rank', 800);
-const rows = await page.locator('#rankBody .rank-row').count();
+const rows = await settled('#rankBody .rank-row');
 rows === 46 ? ok(`46 frequency rows`) : bad(`rows ${rows}`);
 await page.click('[data-rf=linked]');
 await wait(300);
 ok(`linked-only -> ${await page.locator('#rankBody .rank-row').count()}`);
 
 await go('#/quiz', 800);
+await settled('[data-no-cats]');
 await page.click('[data-no-cats]');
 await page.click('[data-qc=redis]');
 await page.locator('#cntRange').fill('5');
@@ -119,9 +124,11 @@ await wait(500);
 await page.screenshot({ path: `${OUT}/p4-demo-quiz.png` });
 
 await go('#/progress', 800);
+await settled('.pg-fact b');
 const facts = await page.locator('.pg-fact b').allInnerTexts();
 ok(`progress: ${facts.join(' / ')}`);
 await go('#/about', 800);
+await settled('.prose');
 const aboutTxt = await page.locator('.prose').first().innerText();
 aboutTxt.includes('示例题库') ? ok('about explains demo provenance') : bad('about missing demo notice');
 await page.screenshot({ path: `${OUT}/p5-demo-about.png` });
@@ -150,11 +157,14 @@ imported ? ok('folder import switched library to 747 questions') : bad('import d
 const chip = await page.locator('#libBtn').innerText();
 chip.includes('本地题库') ? ok(`chip switched: ${chip.replace(/\n/g, ' ')}`) : bad(`chip ${chip}`);
 (await page.locator('.demo-strip').count()) === 0 ? ok('demo disclosure removed after import') : bad('disclosure still shown');
+const navCount = await page.locator('[data-nav=lib] .nb').innerText();
+navCount === '747' ? ok('nav count follows imported library') : bad(`nav count ${navCount}`);
+(await page.locator('#navDrop').count()) === 1 ? ok('nav dropdown not duplicated after rebuild') : bad('navDrop duplicated');
 await page.screenshot({ path: `${OUT}/p7-imported-home.png` });
 
 console.log('\n== E. IMPORTED LIBRARY WORKS ==');
 await go('#/d/network-tcp', 1200);
-const fullCards = await page.locator('.qcard[data-q]').count();
+const fullCards = await settled('.qcard[data-q]');
 fullCards === 24 ? ok('full TCP chapter: 24 questions') : bad(`cards ${fullCards}`);
 await page.locator('[data-expand-all]').first().click();
 await page.evaluate(async () => {
@@ -171,15 +181,15 @@ const blobSrc = await page.locator('.prose img.md-img').first().getAttribute('sr
 blobSrc.startsWith('blob:') ? ok('image src is a blob URL') : bad(`src ${blobSrc}`);
 await page.screenshot({ path: `${OUT}/p8-imported-reader.png` });
 await go('#/d/algorithm-linklist-01', 1200);
-const fullTabs = await page.locator('.code-tabs').count();
+const fullTabs = await settled('.code-tabs');
 fullTabs >= 7 ? ok(`full algorithm tabs: ${fullTabs}`) : bad(`tabs ${fullTabs}`);
 await go('#/rank', 900);
-const fullRows = await page.locator('#rankBody .rank-row').count();
+const fullRows = await settled('#rankBody .rank-row');
 fullRows === 287 ? ok('full frequency board: 287 rows') : bad(`rows ${fullRows}`);
 await page.keyboard.press('Control+k');
-await wait(900);
+await wait(400);
 await page.fill('#palInput', '跳表');
-await wait(600);
+await page.locator('.pal-item[data-pi]').first().waitFor({ timeout: 25000 }).catch(() => {});
 const h2 = await page.locator('.pal-item[data-pi]').count();
 h2 > 0 ? ok(`full-text search on imported index: ${h2} hits`) : bad('imported search failed');
 await page.keyboard.press('Escape');
@@ -189,6 +199,7 @@ console.log('\n== F. PERSISTENCE + REMOVE + UNDO ==');
 await page.reload({ waitUntil: 'networkidle' });
 await wait(1200);
 await go('', 1200);
+await settled('.hero-stats dt');
 const afterReload = await page.locator('.hero-stats dt').first().innerText();
 afterReload === '747' ? ok('imported library survives reload (IndexedDB)') : bad(`after reload ${afterReload}`);
 const marksKept = await page.evaluate(() => Object.keys(JSON.parse(localStorage.getItem('csview.state.v1')).marks || {}).length);
@@ -217,6 +228,10 @@ for (const [w, h] of [[1920, 1080], [1280, 800], [1024, 768], [768, 1024], [430,
   let worst = { v: 0, where: '' };
   for (const r of ['', '#/c/algorithm', '#/d/algorithm-linklist', '#/rank', '#/quiz', '#/progress', '#/about']) {
     await p2.goto(`${BASE}/${r}`, { waitUntil: 'networkidle' });
+    await p2.waitForFunction(() => {
+      const s = document.querySelector('.stage');
+      return s && s.children.length > 0 && !s.querySelector('.skeleton');
+    }, null, { timeout: 30000 }).catch(() => {});
     await p2.waitForTimeout(400);
     const ov = await p2.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     if (ov > worst.v) worst = { v: ov, where: r };
@@ -231,6 +246,9 @@ for (const [w, h] of [[1920, 1080], [1280, 800], [1024, 768], [768, 1024], [430,
     const ov = await p2.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
     ov <= 0 ? ok('mobile library panel: no overflow') : bad(`panel overflow ${ov}`);
     await p2.screenshot({ path: `${OUT}/p10-mobile-panel.png` });
+    await p2.locator('.modal-x').click();
+    await p2.waitForTimeout(350);
+    (await p2.locator('#modal').isHidden()) ? ok('mobile library panel closes via header X') : bad('panel stuck open');
   }
   await c2.close();
 }

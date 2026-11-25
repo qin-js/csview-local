@@ -46,6 +46,8 @@ function updateNavProgress() {
 
 /* ---------------- nav ---------------- */
 function buildNav() {
+  closeNavDrop();
+  document.getElementById('navDrop')?.remove();
   const host = document.getElementById('navLinks');
   host.innerHTML = NAV.map((n) => `<a class="navlink" href="${n.h}" data-nav="${n.k}">${n.t}${n.k === 'lib' ? `<span class="nb">${D.manifest.stats.questions}</span>` : ''}</a>`).join('');
   const lib = host.querySelector('[data-nav=lib]');
@@ -68,7 +70,7 @@ function buildNav() {
   db.innerHTML = NAV.map((n) => `<a class="navlink" href="${n.h}" data-nav="${n.k}">${n.t}</a>`).join('')
     + `<button class="navlink" type="button" data-open-lib style="width:100%;text-align:left">题库来源与导入</button>`
     + D.manifest.groups.map((g) => `<div class="drawer-sec">${esc(g)}</div>` + D.manifest.categories.filter((c) => c.group === g).map((c) => `<a class="navlink" href="#/c/${c.id}" style="${catStyle(c)}"><span class="cdot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hue);margin-right:8px"></span>${esc(c.name)}<span class="nb">${c.questions}</span></a>`).join('')).join('');
-  db.addEventListener('click', (e) => { if (e.target.closest('a')) closeDrawer(); if (e.target.closest('[data-open-lib]')) { closeDrawer(); openLibraryPanel(); } });
+  db.onclick = (e) => { if (e.target.closest('a')) closeDrawer(); if (e.target.closest('[data-open-lib]')) { closeDrawer(); openLibraryPanel(); } };
 
   document.getElementById('footStats').textContent = `${D.manifest.stats.questions} 题 · ${D.manifest.stats.docs} 篇 · ${D.manifest.stats.categories} 个方向 · ${D.manifest.stats.images} 张图示`;
 }
@@ -119,6 +121,7 @@ async function route() {
   closeNavDrop();
   closeDrawer();
   closePopovers();
+  if (!pal.hidden) closePalette();
   current?.cleanup?.();
   current = null;
 
@@ -388,7 +391,7 @@ function installGlobal() {
   });
 
   window.addEventListener('hashchange', route);
-  document.addEventListener('cs:refresh', () => { routeKey = ''; route(); });
+  document.addEventListener('cs:refresh', () => { buildNav(); routeKey = ''; route(); });
   onChange(() => { applyPrefs(); updateNavProgress(); paintLibButton(); });
   document.addEventListener('cs:refresh', paintLibButton);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNavProgress(); });

@@ -34,6 +34,7 @@
     "build:demo": "node tools/build.mjs --demo",
     "dist": "npm run build:demo && node tools/dist.mjs",
     "serve:dist": "node tools/serve-dist.mjs",
+    "deploy": "node tools/deploy.mjs",
     "start": "node server.mjs",
     "dev": "node server.mjs",
     "setup": "npm run fetch && npm run build",
