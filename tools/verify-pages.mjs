@@ -44,6 +44,8 @@ const cards = await settled('.qcard[data-q]');
 cards === 6 ? ok('6 TCP questions') : bad(`cards ${cards}`);
 const svgImg = await page.locator('.prose img.md-img').count();
 svgImg === 1 ? ok('local SVG diagram present') : bad(`img ${svgImg}`);
+await page.locator('.prose img.md-img').first().scrollIntoViewIfNeeded();
+await page.waitForFunction(() => { const i = document.querySelector('.prose img.md-img'); return i && i.complete && i.naturalWidth > 0; }, null, { timeout: 20000 }).catch(() => {});
 const imgOk = await page.locator('.prose img.md-img').first().evaluate((i) => i.complete && i.naturalWidth > 0);
 imgOk ? ok('SVG actually decoded') : bad('SVG broken');
 const broken = await page.locator('.img-fallback').count();
