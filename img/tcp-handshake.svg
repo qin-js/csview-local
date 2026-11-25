@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 400" width="720" height="400" font-family="Inter, system-ui, 'PingFang SC', sans-serif">
+  <defs>
+    <linearGradient id="lif" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#4C7DFF"/><stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#7AA2FF"/>
+    </marker>
+    <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0 0 10 5 0 10z" fill="#FF3D6E"/>
+    </marker>
+  </defs>
+  <rect width="720" height="400" fill="#0E1428"/>
+  <g stroke="#223055" stroke-width="1">
+    <path d="M0 40h720M0 360h720"/>
+  </g>
+  <text x="24" y="27" fill="#7183AC" font-size="12" letter-spacing="2">TCP THREE-WAY HANDSHAKE</text>
+
+  <g>
+    <rect x="70" y="56" width="150" height="34" rx="9" fill="#131B33" stroke="#4C7DFF" stroke-opacity=".55"/>
+    <text x="145" y="78" fill="#E9EEFF" font-size="14" font-weight="600" text-anchor="middle">客户端 Client</text>
+    <rect x="500" y="56" width="150" height="34" rx="9" fill="#131B33" stroke="#22D3EE" stroke-opacity=".55"/>
+    <text x="575" y="78" fill="#E9EEFF" font-size="14" font-weight="600" text-anchor="middle">服务端 Server</text>
+  </g>
+
+  <g stroke="#223055" stroke-width="2" stroke-dasharray="5 6">
+    <path d="M145 96v250M575 96v250"/>
+  </g>
+
+  <g font-size="12.5">
+    <rect x="86" y="112" width="118" height="22" rx="6" fill="#18213C"/>
+    <text x="145" y="127" fill="#A9B6DA" text-anchor="middle">CLOSED</text>
+    <rect x="516" y="112" width="118" height="22" rx="6" fill="#18213C"/>
+    <text x="575" y="127" fill="#A9B6DA" text-anchor="middle">LISTEN</text>
+  </g>
+
+  <g>
+    <path d="M145 160H575" stroke="url(#lif)" stroke-width="2.4" marker-end="url(#ah)"/>
+    <rect x="248" y="138" width="224" height="24" rx="7" fill="#0B1022" stroke="#4C7DFF" stroke-opacity=".4"/>
+    <text x="360" y="155" fill="#7AA2FF" font-size="12.5" text-anchor="middle" font-weight="600">① SYN = 1, seq = x</text>
+    <text x="145" y="182" fill="#FFB020" font-size="11.5" text-anchor="middle">SYN_SENT</text>
+  </g>
+
+  <g>
+    <path d="M575 226H145" stroke="#FF3D6E" stroke-width="2.4" marker-end="url(#ah2)"/>
+    <rect x="228" y="204" width="264" height="24" rx="7" fill="#0B1022" stroke="#FF3D6E" stroke-opacity=".4"/>
+    <text x="360" y="221" fill="#FF7A9C" font-size="12.5" text-anchor="middle" font-weight="600">② SYN = 1, ACK = 1, seq = y, ack = x+1</text>
+    <text x="575" y="248" fill="#FFB020" font-size="11.5" text-anchor="middle">SYN_RCVD</text>
+  </g>
+
+  <g>
+    <path d="M145 292H575" stroke="url(#lif)" stroke-width="2.4" marker-end="url(#ah)"/>
+    <rect x="248" y="270" width="224" height="24" rx="7" fill="#0B1022" stroke="#22D3EE" stroke-opacity=".4"/>
+    <text x="360" y="287" fill="#22D3EE" font-size="12.5" text-anchor="middle" font-weight="600">③ ACK = 1, seq = x+1, ack = y+1</text>
+  </g>
+
+  <g font-size="12.5" font-weight="600">
+    <rect x="80" y="312" width="130" height="24" rx="7" fill="#0E2A22" stroke="#34D399" stroke-opacity=".5"/>
+    <text x="145" y="329" fill="#34D399" text-anchor="middle">ESTABLISHED</text>
+    <rect x="510" y="312" width="130" height="24" rx="7" fill="#0E2A22" stroke="#34D399" stroke-opacity=".5"/>
+    <text x="575" y="329" fill="#34D399" text-anchor="middle">ESTABLISHED</text>
+  </g>
+
+  <text x="24" y="382" fill="#4E5D80" font-size="11.5">第三次握手让服务端确认「客户端能收到自己发的包」，同时避免历史重复 SYN 建立无效连接。</text>
+</svg>
