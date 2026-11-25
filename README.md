@@ -54,7 +54,7 @@ CSView 把数百篇真实面经提炼成了高频题库，内容质量很高，�
 
 ## 快速开始
 
-需要 **Node.js ≥ 20**（用到原生 `fetch`）和 `git`（或 `tar`）。
+需要 **Node.js ≥ 20.0**（用到原生 `fetch`）和 `git`（或 `tar`）。20.0 / 20.9 / 22 三个版本都实测跑通过完整流程。
 
 ```bash
 git clone https://github.com/qin-js/csview-local.git
@@ -67,6 +67,10 @@ npm start         # → http://localhost:5173
 ```
 
 换端口：`PORT=8080 npm start`。
+
+**如果报 Node 版本不够**：先 `git pull` 再重新 `npm install`。依赖已锁在支持 Node 20.0 的版本
+（`markdown-it` 14、`shiki` 3）；旧提交里的 `markdown-it` 15 会带入要求 Node ≥ 20.19 的 `entities` 8，
+`shiki` 4 的 wasm 载入还用到 Node 22 才有的 `Response.bytes()`。
 
 `npm run fetch` 会把上游快照的 commit SHA 写进 `content/.source.json`，构建后在「关于」页可以看到内容来源与拉取时间。想更新内容：`npm run fetch -- --force && npm run build`。
 

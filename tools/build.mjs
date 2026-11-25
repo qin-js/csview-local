@@ -1,12 +1,13 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import crypto from 'node:crypto';
 import matter from 'gray-matter';
 import MarkdownIt from 'markdown-it';
 import footnote from 'markdown-it-footnote';
 import { createHighlighter } from 'shiki';
 
-const ROOT = path.resolve(import.meta.dirname, '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DEMO_MODE = process.argv.includes('--demo');
 const CONTENT = path.join(ROOT, DEMO_MODE ? 'demo-src' : 'content');
 const OUT = path.join(ROOT, DEMO_MODE ? 'demo' : 'public', 'data');

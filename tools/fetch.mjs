@@ -1,10 +1,11 @@
 import fs from 'node:fs';
 import fsp from 'node:fs/promises';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import { execFileSync } from 'node:child_process';
 
-const ROOT = path.resolve(import.meta.dirname, '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const CONTENT = path.join(ROOT, 'content');
 const REPO = process.env.CSVIEW_REPO || 'https://github.com/zijing2333/CSView.git';
 const REF = process.env.CSVIEW_REF || 'main';

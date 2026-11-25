@@ -1,8 +1,9 @@
 import { execFileSync } from 'node:child_process';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import fs from 'node:fs';
 
-const ROOT = path.resolve(import.meta.dirname, '..');
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = path.join(ROOT, 'dist');
 const REPO = JSON.parse(fs.readFileSync(path.join(ROOT, 'package.json'), 'utf8')).repository.url.replace(/^git\+/, '');
 const msg = process.argv[2] || 'deploy: update site';
