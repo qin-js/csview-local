@@ -742,6 +742,11 @@ html[data-theme='light'] .shiki,html[data-theme='light'] .shiki span{color:var(-
 .modal{position:fixed;inset:0;z-index:125;display:flex;align-items:center;justify-content:center;padding:24px;background:var(--scrim);backdrop-filter:blur(5px);animation:fadeIn .18s}
 .modal-box{width:min(480px,100%);background:var(--surface);border:1px solid var(--line-2);border-radius:var(--r-l);box-shadow:var(--shadow-l);padding:26px;animation:palIn .24s var(--ease-out)}
 .modal-box h3{font-size:18px;margin-bottom:10px}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px}
+.modal-head h3{margin-bottom:0}
+.modal-x{flex:none;display:grid;place-items:center;width:30px;height:30px;border-radius:9px;border:1px solid var(--line-2);background:var(--surface-2);color:var(--fg-3);cursor:pointer;transition:.18s var(--ease)}
+.modal-x:hover{color:var(--fg);border-color:var(--volt);background:color-mix(in srgb,var(--volt) 16%,var(--surface-2))}
+.modal-x svg{width:15px;height:15px}
 .modal-box p{font-size:13.5px;color:var(--fg-2);line-height:1.7}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:22px}
 
@@ -849,6 +854,7 @@ html[data-theme='light'] .shiki,html[data-theme='light'] .shiki span{color:var(-
 .demo-strip p{font-size:12.5px;color:var(--fg-3);line-height:1.65;margin-top:3px;max-width:82ch}
 
 .modal-box.wide{width:min(620px,100%);max-height:86vh;overflow-y:auto}
+.modal-box.wide .modal-head{position:sticky;top:0;z-index:2;background:var(--surface);padding:4px 0 10px;margin-top:-4px}
 .src-card{border:1px solid var(--line-2);border-radius:var(--r-m);padding:15px 16px;background:var(--bg-2)}
 .src-card.demo{border-color:color-mix(in srgb,var(--amber) 36%,transparent)}
 .src-card.local{border-color:color-mix(in srgb,var(--ok) 36%,transparent)}

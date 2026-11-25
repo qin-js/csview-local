@@ -125,7 +125,7 @@ export function toast(msg, kind = 'ok', action) {
 export function modal({ title, body, confirmText = '确定', cancelText = '取消', danger = false, onConfirm, actions = true, wide = false }) {
   const host = document.getElementById('modal');
   host.hidden = false;
-  host.innerHTML = `<div class="modal-box${wide ? ' wide' : ''}" role="document"><h3>${esc(title)}</h3><div class="modal-body">${body}</div>
+  host.innerHTML = `<div class="modal-box${wide ? ' wide' : ''}" role="document"><div class="modal-head"><h3>${esc(title)}</h3><button class="modal-x" data-mx type="button" aria-label="关闭">${iconOutline('x')}</button></div><div class="modal-body">${body}</div>
     ${actions ? `<div class="modal-actions"><button class="btn btn-sm btn-ghost" data-mclose>${esc(cancelText)}</button>
     <button class="btn btn-sm ${danger ? 'btn-danger' : 'btn-primary'}" data-mok>${esc(confirmText)}</button></div>` : ''}</div>`;
   document.body.classList.add('locked');
@@ -133,9 +133,10 @@ export function modal({ title, body, confirmText = '确定', cancelText = '取�
   const onKey = (e) => { if (e.key === 'Escape') { e.stopPropagation(); close(); } };
   document.addEventListener('keydown', onKey);
   host.querySelector('[data-mclose]')?.addEventListener('click', close);
+  host.querySelector('[data-mx]').addEventListener('click', close);
   host.addEventListener('click', (e) => { if (e.target === host) close(); });
   host.querySelector('[data-mok]')?.addEventListener('click', async () => { const r = await onConfirm?.(); if (r !== false) close(); });
-  (host.querySelector('[data-mok]') || host.querySelector('button'))?.focus();
+  (host.querySelector('[data-mok]') || host.querySelector('.modal-body button') || host.querySelector('[data-mx]'))?.focus();
   return close;
 }
 
