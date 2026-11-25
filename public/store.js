@@ -1,3 +1,5 @@
+import * as lib from './library.js';
+
 const KEY = 'csview.state.v1';
 
 const defaults = () => ({
@@ -34,7 +36,22 @@ export function emit() { save(); listeners.forEach((f) => f()); }
 export const D = { manifest: null, docs: new Map(), search: null, rank: null, qIndex: new Map(), docIndex: new Map(), catIndex: new Map() };
 const pending = new Map();
 
+export const LIB = { mode: 'bundled', info: null };
+
+export function resetData() {
+  D.manifest = null; D.search = null; D.rank = null;
+  D.docs.clear(); D.qIndex.clear(); D.docIndex.clear(); D.catIndex.clear();
+  pending.clear();
+}
+
+export async function detectLibrary() {
+  const info = await lib.getInfo();
+  if (info) { LIB.mode = 'local'; LIB.info = info; } else { LIB.mode = 'bundled'; LIB.info = null; }
+  return LIB;
+}
+
 async function jget(url) {
+  if (LIB.mode === 'local') return lib.getJson(url);
   const res = await fetch(url);
   if (!res.ok) throw new Error(`${res.status} ${url}`);
   return res.json();
@@ -42,7 +59,7 @@ async function jget(url) {
 
 function once(key, url, assign) {
   if (pending.has(key)) return pending.get(key);
-  const p = jget(url).then((data) => { assign(data); pending.delete(key); return data; })
+  const p = jget(url).then(async (data) => { await assign(data); pending.delete(key); return data; })
     .catch((e) => { pending.delete(key); throw e; });
   pending.set(key, p);
   return p;
@@ -50,7 +67,7 @@ function once(key, url, assign) {
 
 export async function loadManifest() {
   if (D.manifest) return D.manifest;
-  return once('manifest', '/data/manifest.json', (m) => {
+  return once('manifest', 'data/manifest.json', (m) => {
     D.manifest = m;
     for (const c of m.categories) D.catIndex.set(c.id, c);
     for (const d of m.docs) {
@@ -62,17 +79,20 @@ export async function loadManifest() {
 
 export async function loadDoc(id) {
   if (D.docs.has(id)) return D.docs.get(id);
-  return once(`doc:${id}`, `/data/d/${encodeURIComponent(id)}.json`, (d) => D.docs.set(id, d));
+  return once(`doc:${id}`, `data/d/${encodeURIComponent(id)}.json`, async (d) => {
+    if (LIB.mode === 'local') await lib.resolveDocAssets(d);
+    D.docs.set(id, d);
+  });
 }
 
 export async function loadSearch() {
   if (D.search) return D.search;
-  return once('search', '/data/search.json', (s) => { D.search = s; });
+  return once('search', 'data/search.json', (s) => { D.search = s; });
 }
 
 export async function loadRank() {
   if (D.rank) return D.rank;
-  return once('rank', '/data/rank.json', (r) => { D.rank = r; });
+  return once('rank', 'data/rank.json', (r) => { D.rank = r; });
 }
 
 /* ---------------- mutations ---------------- */

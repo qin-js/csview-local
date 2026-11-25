@@ -25,6 +25,18 @@ version control. Please use the fetched material for personal study only.
 The upstream project credits https://xiaolincoding.com/ for part of its
 material; those rights likewise remain with the respective authors.
 
+DEMO LIBRARY
+============
+
+The public GitHub Pages site ships a small demo library written from scratch by
+this project's author. Its markdown sources live in `demo-src/` and are covered
+by the same MIT license as the code. No upstream CSView text or images are
+published there.
+
+Visitors may import a locally built full library through the "题库来源" panel.
+Imported data is stored only in that visitor's own browser (IndexedDB) and is
+never uploaded, hosted, or redistributed by this project.
+
 THIRD-PARTY COMPONENTS
 ======================
 

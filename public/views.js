@@ -51,12 +51,20 @@ async function home() {
   const contDocs = recent.length ? recent.map((r) => D.docIndex.get(r.d)) : starters.map((id) => D.docIndex.get(id));
   const methodDocs = docsOf('method').slice(0, 3);
 
+  const demo = !!m.demo;
   const html = `
+  ${demo ? `<div class="demo-strip" data-reveal>
+    <span class="ds-ic">${icon('spark')}</span>
+    <div><b>你正在浏览原创示例题库</b><p>公开站点只托管界面代码。完整 ${'747'} 道面经题来自上游 CSView，作者声明禁止转载，因此需你在本地构建后导入——数据只留在你的浏览器里。</p></div>
+    <button class="btn btn-primary btn-sm" data-open-lib type="button">${icon('download')}导入完整题库</button>
+  </div>` : ''}
   <section class="hero">
     <div class="hero-copy">
-      <div class="kicker" data-reveal><span class="dot"></span>面经驱动 · 真实考题 · 开源免费</div>
+      <div class="kicker" data-reveal><span class="dot"></span>${demo ? '原创示例 · 功能完整 · 可导入题库' : '面经驱动 · 真实考题 · 开源免费'}</div>
       <h1 data-reveal data-delay="60">把<span class="grad">面经</span>，<br>练成<em>肌肉记忆</em>。</h1>
-      <p class="lede" data-reveal data-delay="120">${m.stats.questions} 道从数百篇真实面经里提炼出来的高频题，覆盖算法、网络、操作系统、数据库与三大语言。边读边测，把「看过」变成「答得出」。</p>
+      <p class="lede" data-reveal data-delay="120">${demo
+        ? `${m.stats.questions} 道原创示例题，覆盖网络、系统、数据库、C++/Go 与算法设计。折叠自测、题频排序、掌握度追踪、全文搜索在这里全部真实可用——导入本地构建的题库即可换成完整 747 题。`
+        : `${m.stats.questions} 道从数百篇真实面经里提炼出来的高频题，覆盖算法、网络、操作系统、数据库与三大语言。边读边测，把「看过」变成「答得出」。`}</p>
       <div class="hero-cta" data-reveal data-delay="180">
         <a class="btn btn-primary" href="#/quiz">${icon('target')}开始自测<kbd>Q</kbd></a>
         <a class="btn btn-ghost" href="#/c/algorithm">${icon('layers')}浏览题库</a>
@@ -633,7 +641,7 @@ async function rankView() {
   <header class="rank-hero">
     <div>
       <h1>面经高频榜</h1>
-      <p>把 ${rank.length} 条面经里出现过的问法做了归并统计。次数越高，说明面试官越爱问 —— 复习时间有限时，从上往下刷就对了。其中 ${rank.filter((r) => r.q).length} 条已经匹配到站内解析，点击直达。</p>
+      <p>把 ${rank.length} 条${D.manifest.demo ? '示例题频' : '面经'}记录里出现过的问法做了归并统计。次数越高，说明面试官越爱问 —— 复习时间有限时，从上往下刷就对了。其中 ${rank.filter((r) => r.q).length} 条已经匹配到站内解析，点击直达。</p>
       <div class="ch-stats" style="margin-top:18px">
         <div><b>${rank.length}</b><span>面经问法</span></div>
         <div><b style="color:var(--flare)">${rank.filter((r) => r.f >= 3).length}</b><span>出现 ≥3 次</span></div>
@@ -1112,6 +1120,7 @@ async function aboutView() {
         <div class="dh-actions">
           <a class="btn btn-primary btn-sm" href="${m.repo}" target="_blank" rel="noopener">${icon('external')}GitHub 原项目</a>
           <a class="btn btn-ghost btn-sm" href="${m.site}" target="_blank" rel="noopener">${icon('net')}作者原站 csview.cn</a>
+          <button class="btn btn-quiet btn-sm" data-open-lib type="button">${icon('layers')}题库来源</button>
         </div>
       </header>
       <article class="qcard"><div class="qbody" style="border:0;padding-top:18px"><div class="prose" style="--hue:#8B9CFF">${intro.html}</div></div></article>
@@ -1122,7 +1131,7 @@ async function aboutView() {
           ${[
             ['target', '题目级自测', '每道题都能折叠答案先自己想，三档自评直接写入掌握度，错题自动归集。'],
             ['flame', '面经频次排序', '把仓库里 15 份题频记录归并成一张榜，并自动匹配到站内对应解析。'],
-            ['search', '全文检索', '747 道题的题干与解析全部建立本地索引，⌘K 即时搜索，支持方向过滤。'],
+            ['search', '全文检索', `${m.stats.questions} 道题的题干与解析全部建立本地索引，⌘K 即时搜索，支持方向过滤。`],
             ['note', '个人笔记', 'HR 面与项目题没有标准答案，可以写下自己的版本，随进度一起导出。'],
             ['code', '三语言题解', '算法题的 C++ / Java / Go 题解切换一次，全站记住你的选择。'],
             ['chart', '进度与打卡', '掌握分布、连续打卡、自测记录都在本机保存，可导出 JSON 备份。'],
@@ -1154,7 +1163,9 @@ async function aboutView() {
       </div>
       <div class="rail-box">
         <div class="rail-title"><span>版权与来源</span></div>
-        <p style="font-size:12.5px;color:var(--fg-3);line-height:1.75">全部文字、题解与图片均来自 <a href="${m.repo}" target="_blank" rel="noopener" style="color:var(--volt-2)">zijing2333/CSView</a>，版权归原作者所有。本页面只是为这批开源内容重新做了一套本地阅读与自测界面，禁止将内容整合搬运到任何公众号。原项目特别鸣谢 <a href="https://xiaolincoding.com/" target="_blank" rel="noopener" style="color:var(--volt-2)">小林 coding</a>。</p>
+        <p style="font-size:12.5px;color:var(--fg-3);line-height:1.75">${m.demo
+          ? `当前展示的题目、解析与图示由本项目作者原创撰写，可自由分发。完整面经内容来自 <a href="${m.repo}" target="_blank" rel="noopener" style="color:var(--volt-2)">zijing2333/CSView</a>，版权归原作者所有，上游声明禁止转载，故不随本公开站点分发；请在本地构建后通过「题库来源」导入。原项目特别鸣谢 <a href="https://xiaolincoding.com/" target="_blank" rel="noopener" style="color:var(--volt-2)">小林 coding</a>。`
+          : `全部文字、题解与图片均来自 <a href="${m.repo}" target="_blank" rel="noopener" style="color:var(--volt-2)">zijing2333/CSView</a>，版权归原作者所有。本页面只是为这批内容重新做了一套本地阅读与自测界面，禁止将内容整合搬运到任何公众号。原项目特别鸣谢 <a href="https://xiaolincoding.com/" target="_blank" rel="noopener" style="color:var(--volt-2)">小林 coding</a>。`}</p>
         <p style="font-size:11.5px;color:var(--fg-4);margin-top:12px;font-family:var(--mono);line-height:1.9">内容构建于 ${new Date(m.builtAt).toLocaleString('zh-CN')}${m.source ? `<br>上游快照 ${esc(String(m.source.sha).slice(0, 12))} · 拉取于 ${new Date(m.source.fetchedAt).toLocaleDateString('zh-CN')}` : ''}</p>
       </div>
     </aside>

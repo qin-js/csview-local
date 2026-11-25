@@ -6,7 +6,9 @@
 
 一个跑在本地的计算机面试复习界面：读题、折叠自测、频次排序、掌握度追踪。
 
-[快速开始](#快速开始) · [功能](#功能) · [快捷键](#快捷键) · [实现](#实现) · [内容版权](#内容版权与许可范围)
+**在线体验 → https://qin-js.github.io/csview-local/**
+
+[在线体验](https://qin-js.github.io/csview-local/) · [快速开始](#快速开始) · [功能](#功能) · [快捷键](#快捷键) · [实现](#实现) · [内容版权](#内容版权与许可范围)
 
 </div>
 
@@ -15,6 +17,10 @@
 > 题目与解析全部来自 [zijing2333/CSView](https://github.com/zijing2333/CSView)，版权归原作者所有，
 > 该作者明确声明禁止转载与搬运。因此内容不随本仓库分发，而是由你在本地执行 `npm run fetch`
 > 直接从上游拉取，仅供个人学习使用。详见[内容版权与许可范围](#内容版权与许可范围)。
+>
+> 在线站点内置的是**本项目作者原创撰写的 58 题示例题库**，用来展示界面本身；
+> 想看完整题库，在本地构建后把 `public/` 目录拖进在线站点的「题库来源」面板即可——
+> 数据只写入你自己浏览器的 IndexedDB，不会上传到任何服务器。见[在线体验与本地题库导入](#在线体验与本地题库导入)。
 
 ---
 
@@ -63,6 +69,34 @@ npm start         # → http://localhost:5173
 换端口：`PORT=8080 npm start`。
 
 `npm run fetch` 会把上游快照的 commit SHA 写进 `content/.source.json`，构建后在「关于」页可以看到内容来源与拉取时间。想更新内容：`npm run fetch -- --force && npm run build`。
+
+## 在线体验与本地题库导入
+
+公开站点 **https://qin-js.github.io/csview-local/** 部署在 GitHub Pages 上，只托管界面代码与
+**原创示例题库**（10 个方向 / 15 篇 / 58 题，全部由本项目作者撰写，见 [`demo-src/`](demo-src)）。
+上游面经内容不会被发布到任何公开地址。
+
+想在这套界面里读完整的 747 道题：
+
+```bash
+git clone https://github.com/qin-js/csview-local.git && cd csview-local
+npm install && npm run fetch && npm run build
+```
+
+然后打开在线站点，点右上角的 **题库来源** → 把本地 `public/` 整个目录拖进上传区（或点击选择文件夹）。
+构建产物会写入浏览器的 IndexedDB，图片转成 blob URL 本地渲染，刷新后依然在，全程不联网上传。
+面板里可以随时移除本地题库回到示例题库，移除后 30 秒内可撤销。学习进度与题库互相独立，切换题库不会丢标记。
+
+自己部署一份 Pages：
+
+```bash
+npm run dist          # 构建示例题库 → dist/（含 .nojekyll，拒绝打包非示例内容）
+npm run serve:dist    # → http://localhost:5199/csview-local/ 本地按子路径预览
+npm run verify:pages  # Playwright 验收：子路径启动、示例题库、导入完整题库、持久化、8 视口
+```
+
+把 `dist/` 推到 `gh-pages` 分支，再在仓库 Settings → Pages 里选 `gh-pages` / `root` 即可。
+所有资源与数据路径都是相对路径，放在任意子路径下都能直接跑。
 
 ## 功能
 
@@ -119,15 +153,19 @@ npm start         # → http://localhost:5173
 ```
 tools/fetch.mjs     从上游拉取 markdown 到 content/，记录快照 SHA
 tools/build.mjs     markdown-it + Shiki → 题目级 JSON、搜索索引、频次榜；镜像图片
+tools/dist.mjs      打包示例题库站点到 dist/（GitHub Pages 产物）
 server.mjs          静态服务器：gzip 预压缩缓存、ETag、SPA 回退、路径穿越防护
+demo-src/           原创示例题库的 markdown 源（唯一会公开托管的内容）
 public/
   index.html        外壳与浮层容器
   styles.css        设计系统（深浅双主题、纹理图表、自定义滚动条）
   store.js          localStorage 状态 + 数据加载缓存
+  library.js        IndexedDB 题库：导入 / 读取 / blob 资源解析 / 移除
+  source.js         「题库来源」面板：构建指引、文件夹拖拽导入、撤销
   ui.js             图标、toast、模态、正文增强（复制/代码页签/图片/脚注/内链）
   views.js          首页 / 分类 / 阅读 / 高频榜 / 自测 / 进度 / 关于
   app.js            路由、导航、搜索面板、全局快捷键
-tools/verify*.mjs   Playwright 验收用例（136 项检查）
+tools/verify*.mjs   Playwright 验收用例（本地 136 项 + Pages 60 项）
 ```
 
 **构建期做的事**
@@ -144,9 +182,12 @@ tools/verify*.mjs   Playwright 验收用例（136 项检查）
 ## 开发
 
 ```bash
-npm run build     # 重建内容产物
-npm start         # 启动服务（默认 5173）
-npm run verify    # 跑两套 Playwright 验收用例
+npm run build         # 重建完整题库产物（需先 fetch）
+npm run build:demo    # 只重建原创示例题库
+npm start             # 启动服务（默认 5173）
+npm run verify        # 跑两套 Playwright 验收用例
+npm run dist          # 构建 Pages 产物到 dist/
+npm run verify:pages  # 子路径 + 导入流程验收（需先 npm run serve:dist）
 ```
 
 `npm run verify` 需要先 `npx playwright install chromium`，或用 `CHROME_BIN` 指向已有的 Chrome/Chromium；
@@ -165,6 +206,8 @@ npm run verify    # 跑两套 Playwright 验收用例
   且严禁将网站内容整合搬运到任何公众号」。
   因此本仓库**不包含、不分发**任何面经内容；`content/`、`public/data/`、`public/img/`
   均在 `.gitignore` 中，由使用者自行从上游拉取，请仅用于个人学习。
+- **在线站点**：GitHub Pages 上只发布界面代码与 [`demo-src/`](demo-src) 里由本项目作者原创撰写的示例题库，
+  这部分同样以 MIT 授权。导入的本地题库只存在于访问者自己浏览器的 IndexedDB 中，不会被上传或再分发。
 - 原项目特别鸣谢 [小林 coding](https://xiaolincoding.com/)，本站复用内容的相应权利同样归属原作者。
 - 若你是内容作者且对本项目有任何异议，请开 issue，我会立即处理。
 

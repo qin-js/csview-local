@@ -1,4 +1,5 @@
-import { S, D, loadManifest, loadSearch, loadRank, setPref, onChange, globalStats } from './store.js';
+import { S, D, loadManifest, loadSearch, loadRank, setPref, onChange, globalStats, detectLibrary } from './store.js';
+import { openLibraryPanel, paintLibButton } from './source.js';
 import { Views } from './views.js';
 import { esc, icon, iconOutline, toast, installProse, revealAll, closeLightbox, closeFootnote, highlight, snippet, catStyle } from './ui.js';
 
@@ -65,8 +66,9 @@ function buildNav() {
 
   const db = document.getElementById('drawerBody');
   db.innerHTML = NAV.map((n) => `<a class="navlink" href="${n.h}" data-nav="${n.k}">${n.t}</a>`).join('')
+    + `<button class="navlink" type="button" data-open-lib style="width:100%;text-align:left">题库来源与导入</button>`
     + D.manifest.groups.map((g) => `<div class="drawer-sec">${esc(g)}</div>` + D.manifest.categories.filter((c) => c.group === g).map((c) => `<a class="navlink" href="#/c/${c.id}" style="${catStyle(c)}"><span class="cdot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--hue);margin-right:8px"></span>${esc(c.name)}<span class="nb">${c.questions}</span></a>`).join('')).join('');
-  db.addEventListener('click', (e) => { if (e.target.closest('a')) closeDrawer(); });
+  db.addEventListener('click', (e) => { if (e.target.closest('a')) closeDrawer(); if (e.target.closest('[data-open-lib]')) { closeDrawer(); openLibraryPanel(); } });
 
   document.getElementById('footStats').textContent = `${D.manifest.stats.questions} 题 · ${D.manifest.stats.docs} 篇 · ${D.manifest.stats.categories} 个方向 · ${D.manifest.stats.images} 张图示`;
 }
@@ -340,9 +342,11 @@ function installGlobal() {
       return;
     }
     if (e.target.closest('[data-open-search]')) { openPalette(); return; }
+    if (e.target.closest('[data-open-lib]')) { openLibraryPanel(); return; }
   });
 
   document.getElementById('searchBtn').addEventListener('click', openPalette);
+  document.getElementById('libBtn').addEventListener('click', openLibraryPanel);
   document.getElementById('palClose').addEventListener('click', closePalette);
   pal.addEventListener('click', (e) => { if (e.target === pal) closePalette(); });
   palInput.addEventListener('input', runSearch);
@@ -385,7 +389,8 @@ function installGlobal() {
 
   window.addEventListener('hashchange', route);
   document.addEventListener('cs:refresh', () => { routeKey = ''; route(); });
-  onChange(() => { applyPrefs(); updateNavProgress(); });
+  onChange(() => { applyPrefs(); updateNavProgress(); paintLibButton(); });
+  document.addEventListener('cs:refresh', paintLibButton);
   document.addEventListener('visibilitychange', () => { if (!document.hidden) updateNavProgress(); });
 }
 
@@ -400,12 +405,14 @@ async function boot() {
 
   main.innerHTML = `<div style="display:grid;gap:16px"><div class="skeleton" style="height:300px"></div><div class="skeleton" style="height:180px"></div></div>`;
   try {
+    await detectLibrary();
     await loadManifest();
   } catch (err) {
     main.innerHTML = `<div class="empty">${icon('alert')}<b>题库数据加载失败</b><p>${esc(err.message)}。请确认本地服务正在运行。</p><button class="btn btn-sm btn-primary" onclick="location.reload()">重试</button></div>`;
     return;
   }
   buildNav();
+  paintLibButton();
   installGlobal();
   loadRank().catch(() => {});
   if (!location.hash) history.replaceState(null, '', '#/');

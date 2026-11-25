@@ -7,9 +7,9 @@
 <meta name="description" content="从数百篇真实面经中提炼的 747 道计算机面试高频题，覆盖算法、计算机网络、操作系统、MySQL、Redis、C++、Java、Golang，支持自测、频次排序与进度追踪。">
 <meta name="theme-color" content="#070A16">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%230B1022'/%3E%3Cpath d='M11 10 6 16l5 6M21 10l5 6-5 6' stroke='%234C7DFF' stroke-width='2.4' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='16' cy='16' r='3' fill='%2322D3EE'/%3E%3C/svg%3E">
-<link rel="preload" href="/fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="preload" href="/fonts/mono.woff2" as="font" type="font/woff2" crossorigin>
-<link rel="stylesheet" href="/styles.css">
+<link rel="preload" href="fonts/inter.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/mono.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 <div class="bg-layers" aria-hidden="true">
@@ -41,6 +41,7 @@
         <svg viewBox="0 0 36 36" class="pp-ring" aria-hidden="true"><circle cx="18" cy="18" r="15.5" class="pp-track"/><circle cx="18" cy="18" r="15.5" class="pp-fill" id="ppFill"/></svg>
         <span id="ppText">0%</span>
       </a>
+      <button class="libbtn" id="libBtn" type="button" aria-label="题库来源" title="题库来源与导入"></button>
       <button class="iconbtn" id="themeBtn" type="button" aria-label="切换主题" title="切换深浅色"></button>
       <button class="iconbtn burger" id="burger" type="button" aria-label="打开菜单" aria-expanded="false">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
@@ -98,6 +99,6 @@
 <div class="modal" id="modal" hidden role="dialog" aria-modal="true"></div>
 <div class="toasts" id="toasts" aria-live="polite"></div>
 
-<script type="module" src="/app.js"></script>
+<script type="module" src="app.js"></script>
 </body>
 </html>

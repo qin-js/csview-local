@@ -31,10 +31,14 @@
   "scripts": {
     "fetch": "node tools/fetch.mjs",
     "build": "node tools/build.mjs",
+    "build:demo": "node tools/build.mjs --demo",
+    "dist": "npm run build:demo && node tools/dist.mjs",
+    "serve:dist": "node tools/serve-dist.mjs",
     "start": "node server.mjs",
     "dev": "node server.mjs",
     "setup": "npm run fetch && npm run build",
     "verify": "node tools/verify.mjs && node tools/verify2.mjs",
+    "verify:pages": "node tools/verify-pages.mjs",
     "preview": "node tools/preview.mjs"
   },
   "dependencies": {

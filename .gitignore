@@ -8,6 +8,9 @@ content/
 public/data/
 public/img/
 public/fonts/
+demo/data/
+demo/img/
+dist/
 
 # logs & editor noise
 *.log

@@ -7,9 +7,10 @@ import footnote from 'markdown-it-footnote';
 import { createHighlighter } from 'shiki';
 
 const ROOT = path.resolve(import.meta.dirname, '..');
-const CONTENT = path.join(ROOT, 'content');
-const OUT = path.join(ROOT, 'public', 'data');
-const IMG = path.join(ROOT, 'public', 'img');
+const DEMO_MODE = process.argv.includes('--demo');
+const CONTENT = path.join(ROOT, DEMO_MODE ? 'demo-src' : 'content');
+const OUT = path.join(ROOT, DEMO_MODE ? 'demo' : 'public', 'data');
+const IMG = path.join(ROOT, DEMO_MODE ? 'demo' : 'public', 'img');
 
 export const CATEGORIES = [
   { id: 'algorithm', dir: 'algorithm-mandatory', name: '面试必刷算法', short: '算法', group: '刷题攻坚', hue: '#FF8A3D', hue2: '#FFD166', glyph: 'algo',
@@ -55,6 +56,34 @@ export const CATEGORIES = [
     desc: '面试本质、准备节奏、项目复盘与精品文章',
     docs: ['interview', 'routine', 'article', 'introduction', 'devlog'] },
 ];
+
+
+const DEMO = process.argv.includes('--demo');
+
+const DEMO_CATEGORIES = [
+  { id: 'network', dir: 'network', name: '计算机网络', short: '网络', group: '计算机基础', hue: '#3D8BFF', hue2: '#22D3EE', glyph: 'net',
+    desc: '握手挥手、可靠传输与拥塞控制，面试问得最细的一块', docs: ['tcp'] },
+  { id: 'os', dir: 'os', name: '操作系统', short: '系统', group: '计算机基础', hue: '#4ADE80', hue2: '#A3E635', glyph: 'os',
+    desc: '进程线程协程、进程间通信与 IO 多路复用', docs: ['process'] },
+  { id: 'mysql', dir: 'mysql', name: 'MySQL', short: 'MySQL', group: '数据库', hue: '#2F7DF6', hue2: '#60A5FA', glyph: 'db',
+    desc: 'B+ 树索引、事务隔离与 MVCC 版本链', docs: ['indexing', 'transaction'] },
+  { id: 'redis', dir: 'redis', name: 'Redis', short: 'Redis', group: '数据库', hue: '#FF4D4F', hue2: '#FF8A6B', glyph: 'cache',
+    desc: '缓存三大问题、一致性、分布式锁与持久化', docs: ['application', 'persistence'] },
+  { id: 'cpp', dir: 'cpp', name: 'C++', short: 'C++', group: '编程语言', hue: '#A855F7', hue2: '#E879F9', glyph: 'cpp',
+    desc: '虚函数表、智能指针、移动语义与内存陷阱', docs: ['summary', 'memoryManagement'] },
+  { id: 'golang', dir: 'golang', name: 'Golang', short: 'Go', group: '编程语言', hue: '#00C2D1', hue2: '#5EEAD4', glyph: 'go',
+    desc: 'GMP 调度、slice 陷阱与 defer 求值时机', docs: ['gmp', 'keyword'] },
+  { id: 'algorithm', dir: 'algorithm', name: '算法必刷', short: '算法', group: '刷题攻坚', hue: '#FF8A3D', hue2: '#FFD166', glyph: 'algo',
+    desc: '链表与二叉树高频题，附 C++ / Java / Go 三语言题解', docs: ['linklist', 'tree'] },
+  { id: 'design', dir: 'design', name: '系统设计', short: '设计', group: '刷题攻坚', hue: '#FF3D9A', hue2: '#C084FC', glyph: 'design',
+    desc: '秒杀、限流与短链，按层层过滤的思路拆解', docs: ['design'] },
+  { id: 'hr', dir: 'hr', name: 'HR 面', short: 'HR', group: '刷题攻坚', hue: '#FB7185', hue2: '#FDA4AF', glyph: 'talk',
+    desc: '行为面试高频问法，写下你自己的作答', docs: ['README'] },
+  { id: 'method', dir: 'method', name: '关于与说明', short: '说明', group: '通关指南', hue: '#8B9CFF', hue2: '#C7D2FE', glyph: 'compass',
+    desc: '这份示例题库的来源、许可与使用方式', docs: ['introduction'] },
+];
+
+const DEMO_METHOD = { introduction: { file: 'method/introduction.md', title: '关于这份示例题库', author: 'csview-local' } };
 
 const METHOD_FILES = {
   interview: { file: 'start-learning/interview.md', title: '重新看待面试：本质、流程与准备', author: '子敬' },
@@ -154,7 +183,7 @@ function collectImage(url) {
   if (!/^https?:\/\//i.test(url)) return null;
   if (imgMap.has(url)) return imgMap.get(url);
   const ext = (url.match(/\.(png|jpe?g|gif|webp|svg)(?:\?|$)/i)?.[1] || 'jpg').toLowerCase().replace('jpeg', 'jpg');
-  const local = `/img/${slugHash(url)}.${ext}`;
+  const local = `img/${slugHash(url)}.${ext}`;
   imgMap.set(url, local);
   imgQueue.push({ url, local, file: path.join(IMG, path.basename(local)) });
   return local;
@@ -415,7 +444,7 @@ function readSource() {
 
 async function main() {
   const t0 = Date.now();
-  if (!fs.existsSync(CONTENT) || !fs.readdirSync(CONTENT).some((f) => !f.startsWith('.'))) {
+  if (!DEMO && (!fs.existsSync(CONTENT) || !fs.readdirSync(CONTENT).some((f) => !f.startsWith('.')))) {
     console.error('\n找不到面经内容。本仓库只包含界面代码，内容需要你自己从上游拉取：\n\n  npm run fetch\n  npm run build\n');
     process.exit(1);
   }
@@ -432,11 +461,13 @@ async function main() {
   const questions = [];
   const catStats = {};
 
-  for (const cat of CATEGORIES) {
+  const CATS = DEMO ? DEMO_CATEGORIES : CATEGORIES;
+  for (const cat of CATS) {
     catStats[cat.id] = { questions: 0, words: 0, docs: 0 };
     for (const rel of cat.docs) {
+      const MF = DEMO ? DEMO_METHOD : METHOD_FILES;
       const isMethod = cat.id === 'method';
-      const file = isMethod ? METHOD_FILES[rel].file : `${cat.dir}/${rel}.md`;
+      const file = isMethod ? MF[rel].file : `${cat.dir}/${rel}.md`;
       const abs = path.join(CONTENT, file);
       if (!fs.existsSync(abs)) { console.warn('missing', file); continue; }
       const raw = fs.readFileSync(abs, 'utf8');
@@ -446,8 +477,8 @@ async function main() {
       const src = preprocess(parsed.content);
       const { intro, chunks } = splitQuestions(src);
       const isQA = chunks.length >= 2;
-      const title = DOC_TITLES[`${cat.id}/${rel}`] || (isMethod ? METHOD_FILES[rel].title : null) || fm.title || rel;
-      let authors = fm.author || METHOD_FILES[rel]?.author || [];
+      const title = (DEMO ? null : DOC_TITLES[`${cat.id}/${rel}`]) || (isMethod ? MF[rel].title : null) || fm.title || rel;
+      let authors = fm.author || MF[rel]?.author || [];
       if (typeof authors === 'string') authors = [authors];
       if (!Array.isArray(authors)) authors = [String(authors)];
 
@@ -502,7 +533,8 @@ async function main() {
 
   // frequency board
   const rankEntries = [];
-  for (const [file, cat] of RANK_SOURCES) {
+  const RANKS = DEMO ? CATS.filter((c) => fs.existsSync(path.join(CONTENT, c.dir, 'rank.md'))).map((c) => [`${c.dir}/rank.md`, c.id]) : RANK_SOURCES;
+  for (const [file, cat] of RANKS) {
     const abs = path.join(CONTENT, file);
     if (!fs.existsSync(abs)) continue;
     const body = matter(fs.readFileSync(abs, 'utf8')).content;
@@ -629,7 +661,16 @@ async function main() {
     fs.writeFileSync(path.join(OUT, 'd', `${doc.id}.json`), JSON.stringify(doc));
   }
 
-  const images = await downloadImages();
+  let images = { ok: 0, fail: 0, total: 0 };
+  if (DEMO) {
+    const srcImg = path.join(CONTENT, 'img');
+    if (fs.existsSync(srcImg)) {
+      fs.mkdirSync(IMG, { recursive: true });
+      for (const f of fs.readdirSync(srcImg)) { fs.copyFileSync(path.join(srcImg, f), path.join(IMG, f)); images.ok++; images.total++; }
+    }
+  } else {
+    images = await downloadImages();
+  }
   for (const job of imgQueue) {
     if (!fs.existsSync(job.file)) imgMap.set(job.url, job.url);
   }
@@ -651,9 +692,10 @@ async function main() {
     source: readSource(),
     repo: 'https://github.com/zijing2333/CSView',
     site: 'https://www.csview.cn',
-    stats: { docs: docs.length, questions: questions.length, words: totalWords, categories: CATEGORIES.length, ranked: rankList.length, matched, images: images.ok },
-    groups: [...new Set(CATEGORIES.map((c) => c.group))],
-    categories: CATEGORIES.map((c) => ({ ...c, docs: undefined, ...catStats[c.id] })),
+    demo: DEMO,
+    stats: { docs: docs.length, questions: questions.length, words: totalWords, categories: CATS.length, ranked: rankList.length, matched, images: images.ok },
+    groups: [...new Set(CATS.map((c) => c.group))],
+    categories: CATS.map((c) => ({ ...c, docs: undefined, ...catStats[c.id] })),
     docs: docs.map((d) => ({ id: d.id, cat: d.cat, title: d.title, type: d.type, authors: d.authors, words: d.words, file: d.file,
       questions: d.questions.map((q) => ({ id: q.id, n: q.n, title: q.title, badges: q.badges, leetcode: q.leetcode, words: q.words, freq: q.freq })) })),
   };
@@ -669,7 +711,7 @@ async function main() {
   fs.writeFileSync(path.join(OUT, "rank.json"), JSON.stringify(rankList.map((e) => ({ t: e.title, f: e.freq, c: e.cat, q: e.qid, d: e.doc || null, a: e.anchor || null }))));
 
   const size = (p) => (fs.statSync(p).size / 1024).toFixed(0) + 'KB';
-  console.log(`docs=${docs.length} questions=${questions.length} words=${totalWords} rank=${rankList.length} matched=${matched}`);
+  console.log(`${DEMO ? '[demo] ' : ''}docs=${docs.length} questions=${questions.length} words=${totalWords} rank=${rankList.length} matched=${matched}`);
   console.log(`images ok=${images.ok} fail=${images.fail}/${images.total}`);
   console.log(`manifest=${size(path.join(OUT, 'manifest.json'))} search=${size(path.join(OUT, 'search.json'))}`);
   console.log(`built in ${((Date.now() - t0) / 1000).toFixed(1)}s`);
