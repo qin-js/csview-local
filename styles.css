@@ -241,7 +241,7 @@ html[data-motion='off'] [data-reveal]{opacity:1;transform:none;transition:none}
 .hero h1{font-size:clamp(38px,5.4vw,68px);line-height:1.06;letter-spacing:-.035em;margin:20px 0 0;font-weight:800}
 .hero h1 .grad{background:linear-gradient(104deg,var(--volt) 0%,var(--cyan) 42%,var(--acid) 88%);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero h1 em{font-style:normal;position:relative;white-space:nowrap}
-.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:.08em;height:.16em;background:linear-gradient(90deg,var(--flare),var(--amber));opacity:.42;border-radius:3px;transform:scaleX(0);transform-origin:left;animation:underline 1s .5s var(--ease-out) forwards}
+.hero h1 em::after{content:'';position:absolute;left:0;right:0;bottom:-.04em;height:.1em;background:linear-gradient(90deg,var(--flare),var(--amber));opacity:.8;border-radius:3px;transform:scaleX(0);transform-origin:left;animation:underline 1s .5s var(--ease-out) forwards}
 @keyframes underline{to{transform:scaleX(1)}}
 html[data-motion='off'] .hero h1 em::after{transform:scaleX(1);animation:none}
 .lede{margin-top:20px;font-size:16px;line-height:1.75;color:var(--fg-2);max-width:56ch}
